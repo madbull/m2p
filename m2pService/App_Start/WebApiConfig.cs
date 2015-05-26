@@ -30,15 +30,16 @@ namespace m2pService
     {
         protected override void Seed(m2pContext context)
         {
-            List<TodoItem> todoItems = new List<TodoItem>
+			List<Activity> activities = new List<Activity>
             {
-                new TodoItem { Id = Guid.NewGuid().ToString(), Text = "First item", Complete = false },
-                new TodoItem { Id = Guid.NewGuid().ToString(), Text = "Second item", Complete = false },
+                new Activity { Id = Guid.NewGuid().ToString(), Name = "Basket" },
+                new Activity { Id = Guid.NewGuid().ToString(), Name = "Bieganie" },
+                new Activity { Id = Guid.NewGuid().ToString(), Name = "Rower" },
             };
 
-            foreach (TodoItem todoItem in todoItems)
+            foreach (var activity in activities)
             {
-                context.Set<TodoItem>().Add(todoItem);
+				context.Set<Activity>().Add(activity);
             }
 
             base.Seed(context);

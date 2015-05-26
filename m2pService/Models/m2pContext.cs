@@ -23,9 +23,7 @@ namespace m2pService.Models
 
         public m2pContext() : base(connectionStringName)
         {
-        } 
-
-        public DbSet<TodoItem> TodoItems { get; set; }
+        }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -39,6 +37,8 @@ namespace m2pService.Models
                 new AttributeToColumnAnnotationConvention<TableColumnAttribute, string>(
                     "ServiceTableColumn", (property, attributes) => attributes.Single().ColumnType.ToString()));
         }
+
+		public DbSet<Activity> Activities { get; set; }
     }
 
 }
