@@ -5,6 +5,10 @@ VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "m2pService", "m2pService\m2pService.csproj", "{209FA716-A7AD-4095-BD70-C8710FC66FA7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "meet2play", "meet2play\meet2play.csproj", "{11C0A056-7EA4-43E0-AA61-6C1DEE0BDDD1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "meet2play.UITests", "meet2play.UITests\meet2play.UITests.csproj", "{337CE4BD-97EA-4E01-9E44-94D250C474A3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,15 @@ Global
 		{209FA716-A7AD-4095-BD70-C8710FC66FA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{209FA716-A7AD-4095-BD70-C8710FC66FA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{209FA716-A7AD-4095-BD70-C8710FC66FA7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{11C0A056-7EA4-43E0-AA61-6C1DEE0BDDD1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{11C0A056-7EA4-43E0-AA61-6C1DEE0BDDD1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{11C0A056-7EA4-43E0-AA61-6C1DEE0BDDD1}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{11C0A056-7EA4-43E0-AA61-6C1DEE0BDDD1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{11C0A056-7EA4-43E0-AA61-6C1DEE0BDDD1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{337CE4BD-97EA-4E01-9E44-94D250C474A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{337CE4BD-97EA-4E01-9E44-94D250C474A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{337CE4BD-97EA-4E01-9E44-94D250C474A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{337CE4BD-97EA-4E01-9E44-94D250C474A3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
