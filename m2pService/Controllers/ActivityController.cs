@@ -16,6 +16,7 @@ namespace m2pService.Controllers
             base.Initialize(controllerContext);
             m2pContext context = new m2pContext();
             DomainManager = new EntityDomainManager<Activity>(context, Request, Services);
+            //test
         }
 
         // GET tables/Activity
