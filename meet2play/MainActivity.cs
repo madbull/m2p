@@ -1,24 +1,37 @@
 ﻿using System;
-
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 using Android.App;
 using Android.Content;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
-using Android.OS;
-using Auth0.SDK;
 using Android.Locations;
-using System.Threading.Tasks;
+using Android.OS;
+using Android.Widget;
+using Auth0.SDK;
+using Microsoft.WindowsAzure.MobileServices;
+using Microsoft.WindowsAzure.MobileServices.SQLiteStore;
+using Environment = System.Environment;
+using Uri = Android.Net.Uri;
 
 namespace meet2play
 {
 	[Activity(Label = "meet2play", MainLauncher = true, Icon = "@drawable/icon")]
 	public class MainActivity : Activity
 	{
-		LocationManager locationManager;
-		Auth0User user;
+		LocationManager _locationManager;
+		Auth0User _user;
 
 		Location location;
+
+        public static MobileServiceClient MobileService = new MobileServiceClient(
+            //"http://10.71.34.1:58705/",
+            "https://m2p.azure-mobile.net/",
+            "RxtyTIAceTWhtMUblGfudEWaGwghjT29"
+        );
+
+	    private IMobileServiceTable<DataObjects.Activity> _activities;
+
+	    const string LocalDbFilename = "localstore.db";
 
 		protected async override void OnCreate(Bundle bundle)
 		{
@@ -26,24 +39,66 @@ namespace meet2play
 			Console.WriteLine("*****************oncreate*****************");
 			SetContentView(Resource.Layout.Main);
            
-			await EnsureUserIsAuthenticated();
+			//await EnsureUserIsAuthenticated();
 
-			locationManager = GetSystemService(Context.LocationService) as LocationManager;
+		    //await InitLocalStoreAsync();
+            //CurrentPlatform.Init();
 
-			FindViewById<Button>(Resource.Id.btnMap).Click += (sender, e) => {
-				var geoUri = Android.Net.Uri.Parse (string.Format( "geo:{0},{1}", location.Latitude, location.Longitude));
+		    _activities = MobileService.GetTable<DataObjects.Activity>();
+		    //await table.PullAsync("allActivities",table.CreateQuery());
+            
+		    
 
-				var mapIntent = new Intent (Intent.ActionView, geoUri);
-				StartActivity (mapIntent);
-			};
+
+            
+
+			_locationManager = GetSystemService(LocationService) as LocationManager;
+
+			FindViewById<Button>(Resource.Id.btnMap).Click += OpenMap;
+
+		    RefreshActivities();
 		}
 
-		protected override void OnResume()
+	    private async void RefreshActivities()
+	    {
+            var tList = await _activities.ReadAsync();
+            var list = tList.ToList();
+            //		    var list = await _activities.Select(a => a).ToListAsync().ConfigureAwait(false);
+            SetLocationResult(string.Join(", ", list.Select(a => a.Name).ToList()));
+	    }
+
+	    private void OpenMap(object sender, EventArgs e)
+	    {
+	        var geoUri = Uri.Parse(string.Format("geo:{0},{1}", location.Latitude, location.Longitude));
+
+	        var mapIntent = new Intent(Intent.ActionView, geoUri);
+	        StartActivity(mapIntent);
+	    }
+
+	    private async Task InitLocalStoreAsync()
+        {
+            // new code to initialize the SQLite store
+            string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), LocalDbFilename);
+
+            if (!File.Exists(path))
+            {
+                File.Create(path).Dispose();
+            }
+
+            var store = new MobileServiceSQLiteStore(path);
+            store.DefineTable<DataObjects.Activity>();
+
+            // Uses the default conflict handler, which fails on conflict
+            // To use a different conflict handler, pass a parameter to InitializeAsync. For more details, see http://go.microsoft.com/fwlink/?LinkId=521416
+            await MobileService.SyncContext.InitializeAsync(store);
+        }
+
+		protected async override void OnResume()
 		{
 			base.OnResume();
 			Console.WriteLine("*****************onresume*****************");
 
-			var provider = locationManager.GetBestProvider(new Criteria(){
+			/*var provider = locationManager.GetBestProvider(new Criteria(){
 				Accuracy = Accuracy.Coarse,
 				PowerRequirement = Power.Medium
 			}, true);
@@ -55,7 +110,7 @@ namespace meet2play
 
 			} else {
 				SetTextResult("No Location Providers");
-			}
+			}*/
 		}
 
 		async Task EnsureUserIsAuthenticated()
@@ -65,8 +120,8 @@ namespace meet2play
 					            "m2p.eu.auth0.com",
 					            "UsAmBBUVXHJevNFlD6xFRrLP1O0y0sqp");
 
-				user = await auth0.LoginAsync(this);
-				SetTextResult("Witaj " + user.Profile["nickname"]);
+				_user = await auth0.LoginAsync(this);
+				SetTextResult("Witaj " + _user.Profile["nickname"]);
 				// get facebook/google/twitter/etc access token => user.Profile["identities"][0]["access_token"]
 			} catch (AggregateException e) {
 				SetTextResult(e.Flatten().Message);
