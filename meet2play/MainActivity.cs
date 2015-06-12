@@ -19,9 +19,11 @@ namespace meet2play
 	public class MainActivity : Activity
 	{
 		LocationManager _locationManager;
-		Auth0User _user;
+		//Auth0User _user;
 
-		Location location;
+		Location _location;
+
+        private MobileServiceUser _user;
 
         public static MobileServiceClient MobileService = new MobileServiceClient(
             //"http://10.71.34.1:58705/",
@@ -43,6 +45,8 @@ namespace meet2play
 
 		    //await InitLocalStoreAsync();
             //CurrentPlatform.Init();
+
+		    await Authenticate();
 
 		    _activities = MobileService.GetTable<DataObjects.Activity>();
 		    //await table.PullAsync("allActivities",table.CreateQuery());
@@ -69,7 +73,7 @@ namespace meet2play
 
 	    private void OpenMap(object sender, EventArgs e)
 	    {
-	        var geoUri = Uri.Parse(string.Format("geo:{0},{1}", location.Latitude, location.Longitude));
+	        var geoUri = Uri.Parse(string.Format("geo:{0},{1}", _location.Latitude, _location.Longitude));
 
 	        var mapIntent = new Intent(Intent.ActionView, geoUri);
 	        StartActivity(mapIntent);
@@ -113,7 +117,7 @@ namespace meet2play
 			}*/
 		}
 
-		async Task EnsureUserIsAuthenticated()
+		/*async Task EnsureUserIsAuthenticated()
 		{
 			try {
 				var auth0 = new Auth0Client(
@@ -128,7 +132,20 @@ namespace meet2play
 			} catch (Exception e) {
 				SetTextResult(e.Message);
 			}
-		}
+		}*/
+
+            private async Task Authenticate()
+    {
+        try
+        {
+            _user = await MobileService.LoginAsync(this, MobileServiceAuthenticationProvider.Facebook);
+            SetTextResult(string.Format("you are now logged in - {0}", _user.UserId));
+        }
+        catch (Exception ex)
+        {
+            SetTextResult("Authentication failed");
+        }
+    }
 
 		private void SetTextResult(string text)
 		{

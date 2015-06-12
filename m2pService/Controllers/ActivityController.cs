@@ -6,9 +6,11 @@ using System.Web.Http.OData;
 using Microsoft.WindowsAzure.Mobile.Service;
 using m2pService.DataObjects;
 using m2pService.Models;
+using Microsoft.WindowsAzure.Mobile.Service.Security;
 
 namespace m2pService.Controllers
 {
+    [AuthorizeLevel(AuthorizationLevel.User)]
     public class ActivityController : TableController<Activity>
     {
         protected override void Initialize(HttpControllerContext controllerContext)
