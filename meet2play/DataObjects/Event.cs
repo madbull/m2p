@@ -1,9 +1,8 @@
 ﻿using System;
-using Microsoft.WindowsAzure.Mobile.Service;
 
-namespace m2pService.DataObjects
+namespace meet2play.DataObjects
 {
-	public class Event : EntityData
+	public class Event
 	{
 		public Activity Activity { get; set; }
 		public Location Location { get; set; }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Android.App;
@@ -7,10 +6,10 @@ using Android.Content;
 using Android.Locations;
 using Android.OS;
 using Android.Widget;
-using Auth0.SDK;
+using meet2play.DataObjects;
 using Microsoft.WindowsAzure.MobileServices;
-using Microsoft.WindowsAzure.MobileServices.SQLiteStore;
-using Environment = System.Environment;
+using Activity = Android.App.Activity;
+using Location = Android.Locations.Location;
 using Uri = Android.Net.Uri;
 
 namespace meet2play
@@ -31,7 +30,9 @@ namespace meet2play
             "RxtyTIAceTWhtMUblGfudEWaGwghjT29"
         );
 
-	    private IMobileServiceTable<DataObjects.Activity> _activities;
+	    private IMobileServiceTable<DataObjects.Activity> _activitiesTable;
+		private IMobileServiceTable<Profile> _profileTable;
+		private Profile _profile;
 
 		protected async override void OnCreate(Bundle bundle)
 		{
@@ -41,22 +42,30 @@ namespace meet2play
            
 		    await Authenticate();
 
-		    _activities = MobileService.GetTable<DataObjects.Activity>();
+		    _activitiesTable = MobileService.GetTable<DataObjects.Activity>();
+			_profileTable = MobileService.GetTable<Profile>();
+				
 
 			_locationManager = GetSystemService(LocationService) as LocationManager;
 
 			FindViewById<Button>(Resource.Id.btnMap).Click += OpenMap;
 
 		    RefreshActivities();
+			RefreshProfile();
+			var a = 1;
 		}
 
 	    private async void RefreshActivities()
 	    {
-            var tList = await _activities.ReadAsync();
+            var tList = await _activitiesTable.ReadAsync();
             var list = tList.ToList();
-            //		    var list = await _activities.Select(a => a).ToListAsync().ConfigureAwait(false);
             SetLocationResult(string.Join(", ", list.Select(a => a.Name).ToList()));
 	    }
+
+		private async void RefreshProfile()
+		{
+			_profile = await _profileTable.LookupAsync(_user.UserId);	
+		}
 
 	    private void OpenMap(object sender, EventArgs e)
 	    {
@@ -91,6 +100,7 @@ namespace meet2play
 			try
 			{
 				_user = await MobileService.LoginAsync(this, MobileServiceAuthenticationProvider.Facebook);
+
 				SetTextResult(string.Format("you are now logged in - {0}", _user.UserId));
 			} 
 			catch (Exception ex)

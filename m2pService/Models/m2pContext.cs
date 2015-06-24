@@ -39,6 +39,10 @@ namespace m2pService.Models
         }
 
 		public DbSet<Activity> Activities { get; set; }
+
+		public System.Data.Entity.DbSet<m2pService.DataObjects.User> Users { get; set; }
+
+		public System.Data.Entity.DbSet<m2pService.DataObjects.Profile> Profiles { get; set; }
     }
 
 }

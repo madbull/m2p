@@ -23,9 +23,6 @@ namespace m2pService.Controllers
         // GET tables/Activity
         public IQueryable<Activity> GetAllActivity()
         {
-//			var user = User as ServiceUser;
-//			var indentites = await user.GetIdentitiesAsync();
-
 	        return Query(); 
         }
 

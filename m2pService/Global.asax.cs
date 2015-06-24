@@ -1,9 +1,8 @@
-﻿using System.Web.Http;
-using System.Web.Routing;
+﻿using System.Web;
 
 namespace m2pService
 {
-    public class WebApiApplication : System.Web.HttpApplication
+    public class WebApiApplication : HttpApplication
     {
         protected void Application_Start()
         {
