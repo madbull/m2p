@@ -18,13 +18,15 @@ namespace m2pService.Controllers
             base.Initialize(controllerContext);
             m2pContext context = new m2pContext();
             DomainManager = new EntityDomainManager<Activity>(context, Request, Services);
-            //test
         }
 
         // GET tables/Activity
         public IQueryable<Activity> GetAllActivity()
         {
-            return Query(); 
+//			var user = User as ServiceUser;
+//			var indentites = await user.GetIdentitiesAsync();
+
+	        return Query(); 
         }
 
         // GET tables/Activity/48D68C86-6EA6-4C25-AA33-223FC9A27959

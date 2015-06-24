@@ -33,28 +33,15 @@ namespace meet2play
 
 	    private IMobileServiceTable<DataObjects.Activity> _activities;
 
-	    const string LocalDbFilename = "localstore.db";
-
 		protected async override void OnCreate(Bundle bundle)
 		{
 			base.OnCreate(bundle);
 			Console.WriteLine("*****************oncreate*****************");
 			SetContentView(Resource.Layout.Main);
            
-			//await EnsureUserIsAuthenticated();
-
-		    //await InitLocalStoreAsync();
-            //CurrentPlatform.Init();
-
 		    await Authenticate();
 
 		    _activities = MobileService.GetTable<DataObjects.Activity>();
-		    //await table.PullAsync("allActivities",table.CreateQuery());
-            
-		    
-
-
-            
 
 			_locationManager = GetSystemService(LocationService) as LocationManager;
 
@@ -79,24 +66,6 @@ namespace meet2play
 	        StartActivity(mapIntent);
 	    }
 
-	    private async Task InitLocalStoreAsync()
-        {
-            // new code to initialize the SQLite store
-            string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), LocalDbFilename);
-
-            if (!File.Exists(path))
-            {
-                File.Create(path).Dispose();
-            }
-
-            var store = new MobileServiceSQLiteStore(path);
-            store.DefineTable<DataObjects.Activity>();
-
-            // Uses the default conflict handler, which fails on conflict
-            // To use a different conflict handler, pass a parameter to InitializeAsync. For more details, see http://go.microsoft.com/fwlink/?LinkId=521416
-            await MobileService.SyncContext.InitializeAsync(store);
-        }
-
 		protected async override void OnResume()
 		{
 			base.OnResume();
@@ -117,35 +86,18 @@ namespace meet2play
 			}*/
 		}
 
-		/*async Task EnsureUserIsAuthenticated()
+        private async Task Authenticate()
 		{
-			try {
-				var auth0 = new Auth0Client(
-					            "m2p.eu.auth0.com",
-					            "UsAmBBUVXHJevNFlD6xFRrLP1O0y0sqp");
-
-				_user = await auth0.LoginAsync(this);
-				SetTextResult("Witaj " + _user.Profile["nickname"]);
-				// get facebook/google/twitter/etc access token => user.Profile["identities"][0]["access_token"]
-			} catch (AggregateException e) {
-				SetTextResult(e.Flatten().Message);
-			} catch (Exception e) {
-				SetTextResult(e.Message);
+			try
+			{
+				_user = await MobileService.LoginAsync(this, MobileServiceAuthenticationProvider.Facebook);
+				SetTextResult(string.Format("you are now logged in - {0}", _user.UserId));
+			} 
+			catch (Exception ex)
+			{
+				SetTextResult("Authentication failed");
 			}
-		}*/
-
-            private async Task Authenticate()
-    {
-        try
-        {
-            _user = await MobileService.LoginAsync(this, MobileServiceAuthenticationProvider.Facebook);
-            SetTextResult(string.Format("you are now logged in - {0}", _user.UserId));
-        }
-        catch (Exception ex)
-        {
-            SetTextResult("Authentication failed");
-        }
-    }
+		}
 
 		private void SetTextResult(string text)
 		{
